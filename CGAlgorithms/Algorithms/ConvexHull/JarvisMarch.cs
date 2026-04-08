@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CGAlgorithms.Algorithms.ConvexHull
 {
@@ -11,43 +12,55 @@ namespace CGAlgorithms.Algorithms.ConvexHull
     {
         public override void Run(List<Point> points, List<Line> lines, List<Polygon> polygons, ref List<Point> outPoints, ref List<Line> outLines, ref List<Polygon> outPolygons)
         {
-            //search for the point with the least x-axis value
-            points.OrderBy(p => p.X);
-            Point startingPoint = points.First();
+            Point startingPoint = points[0];
+            foreach (Point p in points)
+            {
+                if (p.X <= startingPoint.X)
+                    startingPoint = p;
+            }
 
             List<Point> hull = new List<Point>();
             hull.Add(startingPoint);
             Point currentPoint = startingPoint;
-
-            while (true)
+            Point nextPoint = points[0];
+            while(true)
             {
-                Point nextPoint = null;
-                foreach (Point p in points)
+                Line cnLine = new Line(currentPoint,  nextPoint);
+                foreach(Point p in points)
                 {
+                    if (p.Equals(nextPoint))
+                        continue;
 
-                    if (nextPoint == null)
+                    Line npLine = new Line(nextPoint, p);
+
+                    Point cnVector = HelperMethods.GetVector(cnLine);
+                    Point npVector = HelperMethods.GetVector(npLine);
+
+                    Enums.TurnType cnTOnpTurn = HelperMethods.CheckTurn(cnVector, npVector);
+
+                    if (cnTOnpTurn == Enums.TurnType.Left)
                         nextPoint = p;
-
-                    Line currentToNextLine = new Line(currentPoint, nextPoint);
-                    Line currentToPLine = new Line(currentPoint, p);
-                    Point cnVector = HelperMethods.GetVector(currentToNextLine);
-                    Point cpVector = HelperMethods.GetVector(currentToPLine);
-
-                    Enums.TurnType currentToNextTurn = HelperMethods.CheckTurn(cnVector, cpVector);
-
-                    if (currentToNextTurn == Enums.TurnType.Left)
+                    else if (cnTOnpTurn == Enums.TurnType.Colinear)
                     {
-                        currentPoint = nextPoint;
-                        hull.Add(currentPoint);
+                        double distP = DistanceSquared(currentPoint, p);
+                        double distNext = DistanceSquared(currentPoint, nextPoint);
+                        if (distP > distNext)
+                            nextPoint = p;
                     }
                 }
-    
-                //if current p == p then terminate loop
-                if (nextPoint == startingPoint);
-                    break;
-            }
-        }
 
+                hull.Add((nextPoint));
+                currentPoint = nextPoint;
+                if (nextPoint.Equals(startingPoint))
+                    break;
+            }   
+        }
+        private double DistanceSquared(Point a, Point b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            return dx * dx + dy * dy;
+        }
         public override string ToString()
         {
             return "Convex Hull - Jarvis March";
