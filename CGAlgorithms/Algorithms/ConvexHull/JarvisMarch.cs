@@ -22,7 +22,6 @@ namespace CGAlgorithms.Algorithms.ConvexHull
                 return;
             }
 
-            // 1. Find the leftmost lowest point (lowest Y, then smallest X)
             Point start = points[0];
             foreach (Point p in points)
             {
@@ -38,7 +37,6 @@ namespace CGAlgorithms.Algorithms.ConvexHull
                 hull.Add(current);
                 Point next = null;
 
-                // Find the most counter‑clockwise point relative to 'current'
                 foreach (Point p in points)
                 {
                     if (p.Equals(current))
@@ -50,20 +48,15 @@ namespace CGAlgorithms.Algorithms.ConvexHull
                         continue;
                     }
 
-                    // Vectors from current to p and from current to next
                     Point vecP = HelperMethods.GetVector(new Line(current, p));
                     Point vecNext = HelperMethods.GetVector(new Line(current, next));
 
                     Enums.TurnType turn = HelperMethods.CheckTurn(vecP, vecNext);
 
                     if (turn == Enums.TurnType.Left)
-                    {
-                        // p is more counter‑clockwise than next
                         next = p;
-                    }
                     else if (turn == Enums.TurnType.Colinear)
                     {
-                        // Collinear – keep the farthest point
                         double distP = DistanceSquared(current, p);
                         double distNext = DistanceSquared(current, next);
                         if (distP > distNext)
@@ -74,7 +67,6 @@ namespace CGAlgorithms.Algorithms.ConvexHull
                 current = next;
             } while (!current.Equals(start));
 
-            // Remove duplicate start point (added again at the end)
             if (hull.Count > 1 && hull.Last().Equals(hull.First()))
                 hull.RemoveAt(hull.Count - 1);
 
