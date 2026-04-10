@@ -11,10 +11,7 @@ namespace CGAlgorithms.Algorithms.ConvexHull
     {
         public override void Run(List<Point> points, List<Line> lines, List<Polygon> polygons, ref List<Point> outPoints, ref List<Line> outLines, ref List<Polygon> outPolygons)
         {
-            points = points
-            .GroupBy(p => new { X = Math.Round(p.X, 6), Y = Math.Round(p.Y, 6) })
-            .Select(g => g.First())
-            .ToList();
+            points = points.GroupBy(p => new { X = Math.Round(p.X, 6), Y = Math.Round(p.Y, 6) }).Select(g => g.First()).ToList();
 
             int n = points.Count;
 
