@@ -9,9 +9,10 @@ namespace CGAlgorithms.Algorithms.ConvexHull
 {
     public class DivideAndConquer : Algorithm
     {
-        public override void Run(List<Point> points, List<Line> lines, List<Polygon> polygons, ref List<Point> outPoints, ref List<Line> outLines, ref List<Polygon> outPolygons)
+        public override void Run(List<Point> points, List<Line> lines, List<Polygon> polygons,
+                                  ref List<Point> outPoints, ref List<Line> outLines, ref List<Polygon> outPolygons)
         {
-
+         
         }
 
         public override string ToString()

@@ -28,7 +28,7 @@ namespace CGAlgorithms.Algorithms.ConvexHull
 
                         if (points[j].Equals(points[k]))
                             continue;
-
+                        
                         if (HelperMethods.PointOnSegment(points[i], points[j], points[k]))
                         {
                             double minX = Math.Min(points[j].X, points[k].X);
